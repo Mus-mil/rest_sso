@@ -1,0 +1,37 @@
+package handlers
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/go_web/internal/service"
+	"net/http"
+)
+
+type dataHTML struct {
+	IsAuthorized bool
+}
+
+type Handler struct {
+	serv *service.Service
+}
+
+func NewHandler(serv *service.Service) *Handler {
+	return &Handler{serv: serv}
+}
+
+func RegisterRoutes(h *Handler) *gin.Engine {
+	router := gin.Default()
+
+	router.LoadHTMLGlob("web/html/*")
+	router.StaticFS("/static", http.Dir("web/static"))
+
+	auth := router.Group("/auth")
+	{
+		auth.GET("/signin", h.SignInGet)
+		auth.POST("/signin", h.SignInPost)
+		auth.GET("/signup", h.SignUpGet)
+		auth.POST("/signup", h.SignUpPost)
+	}
+	router.GET("/id", h.idGet)
+	router.GET("/", h.welcome)
+	return router
+}
