@@ -7,7 +7,7 @@ import (
 
 type Authorization interface {
 	CreateUser(client models.User) error
-	GetUser(username string, password string) (models.User, error)
+	GetUserID(username string, password string) (int, error)
 }
 
 type Repository struct {

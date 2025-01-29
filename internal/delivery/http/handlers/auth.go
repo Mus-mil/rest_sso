@@ -7,25 +7,38 @@ import (
 	"net/http"
 )
 
+// SignInGet отправка шаблона для аутентификации, get запрос
 func (h *Handler) SignInGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "signin.html", gin.H{
 		"error": "",
 	})
 }
 
+// SignInPost аутентификация пользователя и генерация jwt токена, post запрос
 func (h *Handler) SignInPost(c *gin.Context) {
-	_, err := h.serv.GenerateJWTToken(c.PostForm("username"), c.PostForm("password"))
+	token, err := h.serv.GenerateJWTToken(c.PostForm("username"), c.PostForm("password"))
 	if err != nil {
-		c.HTML(http.StatusOK, "signin.html", gin.H{"error": "неправильный пароль или логин"})
+		c.HTML(http.StatusOK, "signin.html", gin.H{"error": err.Error()})
 		return
 	}
+	c.SetCookie(
+		"token",
+		token,
+		24*3600,
+		"/",
+		"",
+		true,
+		true,
+	)
 	c.Redirect(http.StatusMovedPermanently, "/id")
 }
 
+// SignUpGet отправка шаблона для создания пользователя, get запрос
 func (h *Handler) SignUpGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "signup.html", gin.H{})
 }
 
+// SignUpPost парсинг запроса и создание пользователя, post запрос
 func (h *Handler) SignUpPost(c *gin.Context) {
 	var client models.User
 

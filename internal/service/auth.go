@@ -3,9 +3,15 @@ package service
 import (
 	"crypto/sha1"
 	"encoding/hex"
-	"errors"
 	"github.com/go_web/internal/models"
 	"github.com/go_web/internal/repository"
+	"github.com/golang-jwt/jwt"
+	"time"
+)
+
+const (
+	signKey = "dewo3032NC0#01mdvfd,mpPp4qm4pcwefrr"
+	salt    = "sekmcoemsp"
 )
 
 type AuthService struct {
@@ -21,19 +27,29 @@ func (r *AuthService) CreateUser(client models.User) error {
 	return r.repo.CreateUser(client)
 }
 
-func (r *AuthService) GenerateJWTToken(username string, password string) (models.User, error) {
-	client, err := r.repo.GetUser(username, r.generatePasswordHash(password))
-	if (client.Username == "" || client.Password == "") || err != nil {
-		err = errors.New("invalid username or password")
-		return models.User{}, err
+func (r *AuthService) GenerateJWTToken(username string, password string) (string, error) {
+	id, err := r.repo.GetUserID(username, r.generatePasswordHash(password))
+	if id == 0 || err != nil {
+		return "", err
 	}
 
-	return client, nil
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"ID":      id,
+		"timeNow": time.Now().Unix(),
+		"timer":   time.Now().Add(24 * time.Hour).Unix(),
+	})
+
+	tokenSignature, err := token.SignedString([]byte(signKey))
+	if err != nil {
+		return "", err
+	}
+
+	return tokenSignature, nil
 }
 
 func (r *AuthService) generatePasswordHash(password string) string {
 	passwordHash := sha1.New()
 	passwordHash.Write([]byte(password))
 
-	return hex.EncodeToString(passwordHash.Sum(nil))
+	return hex.EncodeToString(passwordHash.Sum([]byte(salt)))
 }

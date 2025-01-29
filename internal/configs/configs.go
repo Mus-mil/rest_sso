@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 	"os"
 )
@@ -19,6 +20,7 @@ type PostgresConfig struct {
 }
 
 func NewConfigs() Config {
+	godotenv.Load(".env")
 	cfg := Config{
 		Postgres: PostgresConfig{
 			User:    viper.GetString("db.user"),

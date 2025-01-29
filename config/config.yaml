@@ -1,6 +1,6 @@
 db:
-  user: "postgres"
+  user: "sumlim"
   host: "localhost"
-  port: "5436"
-  name: "usersdb"
+  port: "5432"
+  name: "db_yalkin"
   sslmode: "disable"

@@ -22,12 +22,12 @@ func (repo *AuthPostgres) CreateUser(client models.User) error {
 	return nil
 }
 
-func (repo *AuthPostgres) GetUser(username string, password string) (models.User, error) {
+func (repo *AuthPostgres) GetUserID(username string, password string) (int, error) {
 	var client models.User
-	row := repo.db.QueryRow("SELECT id, name, username, password_hash FROM users WHERE username = $1 AND password_hash = $2", username, password)
-	err := row.Scan(&client.ID, &client.Name, &client.Username, &client.Password)
+	row := repo.db.QueryRow("SELECT id FROM users WHERE username = $1 AND password_hash = $2", username, password)
+	err := row.Scan(&client.ID)
 	if err != nil {
-		return models.User{}, err
+		return 0, err
 	}
-	return client, nil
+	return client.ID, nil
 }
