@@ -8,6 +8,7 @@ import (
 type Authorization interface {
 	CreateUser(c models.User) error
 	GenerateJWTToken(username string, password string) (string, error)
+	GetID(username string, password string) (string, error)
 }
 
 type Service struct {

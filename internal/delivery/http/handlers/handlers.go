@@ -31,7 +31,7 @@ func RegisterRoutes(h *Handler) *gin.Engine {
 		auth.GET("/signup", h.SignUpGet)
 		auth.POST("/signup", h.SignUpPost)
 	}
-	router.GET("/id", h.idGet)
+	router.GET("/:id", h.idGet)
 	router.GET("/", h.welcome)
 	return router
 }

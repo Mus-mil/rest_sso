@@ -6,6 +6,8 @@ import (
 	"github.com/go_web/internal/models"
 	"github.com/go_web/internal/repository"
 	"github.com/golang-jwt/jwt"
+	"log"
+	"strconv"
 	"time"
 )
 
@@ -30,6 +32,7 @@ func (r *AuthService) CreateUser(client models.User) error {
 func (r *AuthService) GenerateJWTToken(username string, password string) (string, error) {
 	id, err := r.repo.GetUserID(username, r.generatePasswordHash(password))
 	if id == 0 || err != nil {
+		log.Println(r.generatePasswordHash(password))
 		return "", err
 	}
 
@@ -45,6 +48,15 @@ func (r *AuthService) GenerateJWTToken(username string, password string) (string
 	}
 
 	return tokenSignature, nil
+}
+
+func (r *AuthService) GetID(username string, password string) (string, error) {
+	id, err := r.repo.GetUserID(username, r.generatePasswordHash(password))
+	if id == 0 || err != nil {
+		return "", err
+	}
+	idString := strconv.Itoa(id)
+	return idString, nil
 }
 
 func (r *AuthService) generatePasswordHash(password string) string {

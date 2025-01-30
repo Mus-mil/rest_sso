@@ -1,5 +1,5 @@
 
-all: clear build
+all: clean build
 	./tugan
 
 run:
@@ -8,5 +8,5 @@ run:
 build:
 	go build -o tugan cmd/app/main.go
 
-clear:
+clean:
 	rm -rf tugan

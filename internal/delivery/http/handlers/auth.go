@@ -3,7 +3,6 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go_web/internal/models"
-	"log"
 	"net/http"
 )
 
@@ -16,9 +15,16 @@ func (h *Handler) SignInGet(c *gin.Context) {
 
 // SignInPost аутентификация пользователя и генерация jwt токена, post запрос
 func (h *Handler) SignInPost(c *gin.Context) {
-	token, err := h.serv.GenerateJWTToken(c.PostForm("username"), c.PostForm("password"))
+	var user models.UserSignIn
+
+	if err := c.Bind(&user); err != nil {
+		c.HTML(http.StatusOK, "signin.html", gin.H{"error": "вы ввели не все параметры"})
+		return
+	}
+
+	token, err := h.serv.GenerateJWTToken(user.Username, user.Password)
 	if err != nil {
-		c.HTML(http.StatusOK, "signin.html", gin.H{"error": err.Error()})
+		c.HTML(http.StatusOK, "signin.html", gin.H{"error": "неправильный пароль или логин"})
 		return
 	}
 	c.SetCookie(
@@ -30,7 +36,13 @@ func (h *Handler) SignInPost(c *gin.Context) {
 		true,
 		true,
 	)
-	c.Redirect(http.StatusMovedPermanently, "/id")
+
+	id, err := h.serv.GetID(user.Username, user.Password)
+	if err != nil {
+		c.HTML(http.StatusOK, "signin.html", gin.H{"error": err.Error()})
+		return
+	}
+	c.Redirect(http.StatusMovedPermanently, "/"+id)
 }
 
 // SignUpGet отправка шаблона для создания пользователя, get запрос
@@ -40,19 +52,20 @@ func (h *Handler) SignUpGet(c *gin.Context) {
 
 // SignUpPost парсинг запроса и создание пользователя, post запрос
 func (h *Handler) SignUpPost(c *gin.Context) {
-	var client models.User
+	var user models.User
 
-	if err := c.Bind(&client); err != nil {
-		c.HTML(http.StatusOK, "signup.html", gin.H{"error": err.Error()})
-		log.Println("json:", client.Password, client.Name, client.Password)
+	if err := c.Bind(&user); err != nil {
+		c.HTML(http.StatusOK, "signup.html", gin.H{"error": "создайте другого пользователя"})
 		return
 	}
-	err := h.serv.CreateUser(client)
+	err := h.serv.CreateUser(user)
 	if err != nil {
-		c.HTML(http.StatusOK, "signup.html", gin.H{"error": err.Error()})
+		c.HTML(http.StatusOK, "signup.html", gin.H{"error": "создайте другого пользователя"})
 		return
 	}
-	c.Redirect(http.StatusMovedPermanently, "/id")
+
+	id, err := h.serv.GetID(user.Username, user.Password)
+	c.Redirect(http.StatusMovedPermanently, "/"+id)
 }
 
 func (h *Handler) idGet(c *gin.Context) {
