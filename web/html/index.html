@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="/static/css/chats.css">
+</head>
+<body>
+
+<div class="header">
+    <div class="chat-icon-container">
+        <img id="chatIcon" src="/static/images/default-icon.png" alt="Chat Icon" class="chat-icon" onclick="changeIcon()">
+    </div>
+</div>
+
+<div class="container">
+    <h2>Welcome to the Chat!</h2>
+    <div class="chat-list">
+        <div class="chat-item">
+            <a href="/chat/1">Chat 1</a>
+        </div>
+        <div class="chat-item">
+            <a href="/chat/2">Chat 2</a>
+        </div>
+        <div class="chat-item">
+            <a href="/chat/3">Chat 3</a>
+        </div>
+    </div>
+</div>
+
+<div id="iconModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Select an icon</h3>
+        <input type="file" id="iconUpload" accept="image/*" onchange="uploadIcon()">
+    </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+
+</body>
+</html>

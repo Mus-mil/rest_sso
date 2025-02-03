@@ -9,19 +9,21 @@
 <body>
 <div class="container">
     <h2>Login</h2>
-    <form action="/auth/signin" method="POST">
+    <form id="loginForm"> <!-- Добавил ID формы -->
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
-        <p style="color: red;">{{ .error }}</p>
+        <p id="error-message" style="color: red;"></p> <!-- Добавил место для ошибки -->
 
         <button type="submit">Login</button>
     </form>
 
-    <p>Еще нет аккаунта? <a href="/auth/signup">Зарегистрироваться</a></p> <!-- Ссылка на маршрут входа -->
+    <p>Еще нет аккаунта? <a href="/auth/signup">Зарегистрироваться</a></p>
+
+    <script src="/static/js/signin.js"></script>
 </div>
 </body>
 </html>

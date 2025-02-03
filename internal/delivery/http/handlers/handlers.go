@@ -11,11 +11,11 @@ type dataHTML struct {
 }
 
 type Handler struct {
-	serv *service.Service
+	Serv *service.Service
 }
 
 func NewHandler(serv *service.Service) *Handler {
-	return &Handler{serv: serv}
+	return &Handler{Serv: serv}
 }
 
 func RegisterRoutes(h *Handler) *gin.Engine {
