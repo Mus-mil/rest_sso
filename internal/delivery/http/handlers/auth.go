@@ -40,7 +40,7 @@ func (h *Handler) SignInPost(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "Успешный вход",
-		"redirect": "http://localhost:8080/" + string(id), // Динамический маршрут
+		"redirect": "http://localhost:8080/" + string(id),
 	})
 }
 
@@ -66,12 +66,6 @@ func (h *Handler) SignUpPost(c *gin.Context) {
 
 	id, err := h.Serv.GetID(user.Username, user.Password)
 	c.Redirect(http.StatusMovedPermanently, "/"+id)
-}
-
-func (h *Handler) idGet(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"IsAuthorized": true,
-	})
 }
 
 func (h *Handler) welcome(c *gin.Context) {

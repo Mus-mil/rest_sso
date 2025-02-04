@@ -15,6 +15,17 @@ Database: PostgreSQL, pgAdmin
 ```bash
 make download
 ```
+
+Добавьте конфигурации для базы данных в файле config.yaml по маршруту configs
+Добавьте файл .env и введите пароль для базы данных
+```
+DB_PASSWORD=
+```
+или напишите в терминале bash:
+```
+export DB_PASSWORD=
+```
+
 Запустите веб-сайт:
 ```bash
 make

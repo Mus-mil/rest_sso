@@ -15,6 +15,7 @@
 </div>
 
 <div class="container">
+    {{if .IsAuthorized }}
     <h2>Welcome to the Chat!</h2>
     <div class="chat-list">
         <div class="chat-item">
@@ -27,6 +28,11 @@
             <a href="/chat/3">Chat 3</a>
         </div>
     </div>
+    {{else}}
+    <h2>You are not Authorized!</h2>
+    <p>Пожалуйста, сначала авторизуйтесь.</p>
+    <p><a href="/auth/signin">Войти</a></p>
+    {{end}}
 </div>
 
 <div id="iconModal" class="modal">

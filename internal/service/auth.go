@@ -3,6 +3,7 @@ package service
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
 	"github.com/go_web/internal/models"
 	"github.com/go_web/internal/repository"
 	"github.com/golang-jwt/jwt"
@@ -48,6 +49,22 @@ func (r *AuthService) GenerateJWTToken(username string, password string) (string
 	}
 
 	return tokenSignature, nil
+}
+
+func (r *AuthService) ParsingJWTToken(tokenString string) (string, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(signKey), nil
+	})
+	if err != nil {
+		return "", err
+	}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims["ID"].(string), nil
+	}
+	return "", err
 }
 
 func (r *AuthService) GetID(username string, password string) (string, error) {

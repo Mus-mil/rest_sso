@@ -8,5 +8,8 @@ run:
 build:
 	go build -o tugan cmd/app/main.go
 
+download:
+	go mod tidy
+
 clean:
 	rm -rf tugan
