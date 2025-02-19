@@ -1,5 +1,5 @@
 db:
-  user: "sumlim"
+  user: "postgres"
   host: "localhost"
   port: "5432"
   name: "db_yalkin"

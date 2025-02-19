@@ -1,12 +1,15 @@
 FROM golang:1.23.5
 
-RUN go version
-ENV GOPATH=/
+WORKDIR /app
 
-COPY ./ ./
+# Копируем файлы и зависимости
+COPY go.mod go.sum ./
+RUN go mod download
 
+COPY . .
 
-RUN apt-get update
-RUN apt-get -y install postgresql-client
+# Компилируем приложение
+RUN go build -o tugan cmd/app/main.go
 
-
+# Запускаем сервер
+CMD ["./tugan"]
