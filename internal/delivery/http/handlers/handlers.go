@@ -6,10 +6,6 @@ import (
 	"net/http"
 )
 
-type dataHTML struct {
-	IsAuthorized bool
-}
-
 type Handler struct {
 	Serv *service.Service
 }
