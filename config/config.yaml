@@ -1,6 +1,6 @@
 db:
   user: "postgres"
-  host: "localhost"
+  host: "db"
   port: "5432"
-  name: "db_yalkin"
+  name: "my_db"
   sslmode: "disable"

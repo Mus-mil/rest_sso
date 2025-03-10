@@ -26,7 +26,7 @@ func NewConfigs() Config {
 			User:    viper.GetString("db.user"),
 			Host:    viper.GetString("db.host"),
 			Port:    viper.GetString("db.port"),
-			Pass:    getEnv("DB_PASSWORD", ""),
+			Pass:    getEnv("DB_PASSWORD", "postgres"),
 			Name:    viper.GetString("db.name"),
 			Sslmode: viper.GetString("db.sslmode"),
 		},

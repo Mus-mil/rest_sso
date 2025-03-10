@@ -27,6 +27,7 @@ func (h *Handler) SignInPost(c *gin.Context) {
 
 	token, err := h.Serv.GenerateJWTToken(user.Username, user.Password)
 	if err != nil {
+		log.Println("error from token: ", err)
 		c.HTML(http.StatusOK, "signin.html", gin.H{"error": "неправильный пароль или логин"})
 		return
 	}
@@ -34,6 +35,7 @@ func (h *Handler) SignInPost(c *gin.Context) {
 
 	id, err := h.Serv.GetID(user.Username, user.Password)
 	if err != nil {
+		log.Println("error from getID: ", err)
 		c.HTML(http.StatusOK, "signin.html", gin.H{"error": err.Error()})
 		return
 	}
@@ -54,7 +56,7 @@ func (h *Handler) SignUpPost(c *gin.Context) {
 	var user models.User
 
 	if err := c.Bind(&user); err != nil {
-		log.Println("my_err:", err.Error())
+		log.Println("error from bind: ", err.Error())
 		c.HTML(http.StatusOK, "signup.html", gin.H{"error": "пароль должен содержать минимум 8 символов"})
 		return
 	}
@@ -65,6 +67,12 @@ func (h *Handler) SignUpPost(c *gin.Context) {
 	}
 
 	id, err := h.Serv.GetID(user.Username, user.Password)
+
+	if err != nil {
+		log.Println("error from getID: ", err)
+		c.HTML(http.StatusOK, "signup.html", gin.H{"error": "ошибка сервера"})
+		return
+	}
 	c.Redirect(http.StatusMovedPermanently, "/"+id)
 }
 

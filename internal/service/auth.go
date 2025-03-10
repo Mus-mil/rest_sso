@@ -58,12 +58,28 @@ func (r *AuthService) ParsingJWTToken(tokenString string) (string, error) {
 		}
 		return []byte(signKey), nil
 	})
+
 	if err != nil {
 		return "", err
 	}
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims["ID"].(string), nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return "", fmt.Errorf("invalid token")
 	}
+
+	idValue, exists := claims["ID"]
+	if !exists {
+		return "", fmt.Errorf("ID not found in token")
+	}
+
+	if idStr, ok := idValue.(string); ok {
+		return idStr, nil
+	}
+
+	if idFloat, ok := idValue.(float64); ok {
+		return fmt.Sprintf("%.0f", idFloat), nil
+	}
+
 	return "", err
 }
 
