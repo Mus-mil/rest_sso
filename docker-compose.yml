@@ -7,15 +7,16 @@ services:
       dockerfile: Dockerfile
     container_name: go_app
     environment:
-      - DB_HOST=db
+      - DB_HOST=db #  подключаем контейнер db
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - DB_NAME=maindb
+      - DB_NAME=my_db
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      migrate:
+        condition: service_completed_successfully  # Ждём завершения миграций
     restart: unless-stopped
 
   db:
@@ -24,12 +25,31 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: maindb
+      POSTGRES_DB: my_db
     ports:
-      - "5432:5436"
+      - "5440:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  migrate:
+    image: migrate/migrate
+    container_name: migrate
+    volumes:
+      - ./migrations:/migrations  # Подключаем папку с миграциями
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://postgres:postgres@db:5432/my_db?sslmode=disable",
+      "up"
+    ]
+    depends_on:
+      db:
+        condition: service_healthy  # Ждём готовности базы
 
 volumes:
   postgres_data:
